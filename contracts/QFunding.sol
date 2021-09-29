@@ -1,20 +1,20 @@
 // SPDX-License-Identifier: GPL-3.0
 
-pragma solidity >=0.7.0 <0.9.0;
+pragma solidity >=0.4.22 <0.9.0;
 
-import "./Project.sol"
-import "./Pool.sol"
+import "./Project.sol";
+import "./Pool.sol";
 
 contract QFunding{
    
     enum State {initialized, ongoing, completed}
     
-    constant uint256 startRaisingFrom = 12345678765 - 1 days;
-    constant uint256 raiseBy = 12345678765;
+    uint256 startRaisingFrom = 12345678765 - 1 days;
+    uint256 raiseBy = 12345678765;
     address owner;
     State currentState;
     uint256 public currentBal;
-    address [] projectsListed;
+    Project [] projectsListed;
     Pool sponsorPool;
     
     //modifier to allow access only to the owner.
@@ -54,8 +54,8 @@ contract QFunding{
    //by the Funding organizers. If we have to implement it such that anyone can create a project and
    //participate in the funding remove isOwner modifier, remove the address projectOwner variable then
    //instead pass msg.sender to the Project contract instance.
-   function createProject(address projectOwner, uint projectID) public isOwner isState(State.initialized) {
-       address newProject = new Project(projectOwner, projectID);
+   function createProject(address payable projectOwner, uint projectID) public isOwner isState(State.initialized) {
+       Project newProject = new Project(projectOwner, projectID);
        projectsListed.push(newProject);
    }
    
@@ -69,13 +69,14 @@ contract QFunding{
        uint sumSquaredSqrtFundsSum;
        uint[] memory matchRatio;
        
-       for(unit i = 0; i < projectsListed.length; i++){
-           sumSquaredSqrtFundsSum.add(projectsListed[i].getSquaredSqrtFundsSum())
+       for(uint i = 0; i < projectsListed.length; i++){
+           //sumSquaredSqrtFundsSum.add(projectsListed[i].getSquaredSqrtFundsSum());
+           sumSquaredSqrtFundsSum += projectsListed[i].getSquaredSqrtFundsSum();
        }
        
-       for(unit i = 0; i < projectsListed.length; i++){
+       for(uint i = 0; i < projectsListed.length; i++){
            // redundant variable array matchRatio
-           matchRatio.push(projectsListed[i].getSquaredSqrtFundsSum().div(sumSquaredSqrtFundsSum));
+           matchRatio[i] = projectsListed[i].getSquaredSqrtFundsSum()/sumSquaredSqrtFundsSum;
            sponsorPool.payoutPoolMatch(matchRatio[i], projectsListed[i].owner());
        }
        

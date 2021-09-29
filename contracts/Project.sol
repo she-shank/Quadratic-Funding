@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0
 
-pragma solidity >=0.7.0 <0.9.0;
+pragma solidity >=0.4.22 <0.9.0;
 
 /**
  * @title Storage
@@ -10,10 +10,10 @@ contract Project {
 
     enum State {initialized, ongoing, completed}
 
-    address owner;                                                                  //to store owner, here = the actual Project owner
+    address payable public owner;                                                                  //to store owner, here = the actual Project owner
     uint256 projectID;                                                              //unused variable, may find a use later
-    constant uint256 startRaisingFrom = 12345678765 - 1 days;
-    constant uint256 raiseBy = 12345678765;
+    uint256 constant startRaisingFrom = 12345678765 - 1 days;
+    uint256 constant raiseBy = 12345678765;
     State currentState;
     uint256 public currentBal;
     mapping(address => uint) public funds;
@@ -35,7 +35,7 @@ contract Project {
     //initializes the pID of the project for identifying or mapping other project metadata
     //to any database(eg. IPFS), the projectOwner to payout to, and the currentState to 
     //initialized
-    constructor(address projectOwner, uint pID) public {
+    constructor(address payable projectOwner, uint pID) public {
         projectID = pID;
         owner = projectOwner;
         currentState = State.initialized;
@@ -57,9 +57,9 @@ contract Project {
         if(p == 0)
             return 1;
         if(p % 2 == 1) {
-            return u_pow(x, p-1)*x;
+            return pow(x, p-1)*x;
         } else {
-            return u_pow(x, p / 2)*u_pow(x, p / 2);
+            return pow(x, p / 2)*pow(x, p / 2);
         }
     }
     
@@ -67,7 +67,7 @@ contract Project {
     //to constant raiseBy and startRaisingFrom to meet isState modifier requirements. Currently only
     //the owner can change the phase but chainlink keeper can be implemented later to automate the 
     //change state process.
-    function changeState(uint state) isOwner {
+    function changeState(uint state) public isOwner {
         if(state == 1){
             require(block.timestamp > startRaisingFrom, "ongoing phase cannot be started");
         } else if(state ==2){
@@ -77,7 +77,7 @@ contract Project {
     
     //function to return the square of the sum of the square root of individual contributions when 
     //requested by the Qfunding contract
-    function getSquaredSqrtFundsSum() public {
+    function getSquaredSqrtFundsSum() public returns (uint){
         for(uint i = 0; i<uniqueContributors.length; i++){
             sqrtFundsSum += sqrt(funds[uniqueContributors[i]]);
         }
@@ -88,10 +88,10 @@ contract Project {
     //is required to reference and check if a address has already contributed some amount to prevent
     //user from breaking his contribution into small amounts to cheat quadratic funding. 
     function contribute() public payable isState(State.ongoing) {
-        uint amountRecieved = msg.value
+        uint amountRecieved = msg.value;
         if(funds[msg.sender] == 0){
-            uniqueContributors.push(msg.sender)
-            funds[msg.sender] = amountRecieved
+            uniqueContributors.push(msg.sender);
+            funds[msg.sender] = amountRecieved;
         }else {
             funds[msg.sender] = funds[msg.sender] + amountRecieved;
         }
@@ -101,10 +101,11 @@ contract Project {
     }
     
     //function to payout the funds collected in this project contract to the projectOwner
-    function payout() isOwner payable isState(State.completed) {
-        uint amount = this.balance;
-        projectOwner.transfer(amount);
-    }
+    //TODO check with the access specifier
+    // function payout() isOwner public payable isState(State.completed) {
+    //     uint amount = this.balance;
+    //     projectOwner.transfer(amount);
+    // }
     
     
     
