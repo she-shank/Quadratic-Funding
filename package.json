@@ -7,6 +7,7 @@
     "test": "test"
   },
   "scripts": {
+    "dev": "lite-server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -18,5 +19,12 @@
   "bugs": {
     "url": "https://github.com/she-shank/Quadratic-Funding/issues"
   },
-  "homepage": "https://github.com/she-shank/Quadratic-Funding#readme"
+  "homepage": "https://github.com/she-shank/Quadratic-Funding#readme",
+  "dependencies": {
+    "bootstrap": "^5.1.1"
+  },
+  "devDependencies": {
+    "lite-server": "^2.6.1",
+    "nodemon": "^2.0.13"
+  }
 }
