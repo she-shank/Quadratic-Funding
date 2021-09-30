@@ -21,7 +21,9 @@
   },
   "homepage": "https://github.com/she-shank/Quadratic-Funding#readme",
   "dependencies": {
-    "bootstrap": "^5.1.1"
+    "@truffle/hdwallet-provider": "^1.5.0",
+    "bootstrap": "^5.1.1",
+    "web3": "^1.6.0"
   },
   "devDependencies": {
     "lite-server": "^2.6.1",
