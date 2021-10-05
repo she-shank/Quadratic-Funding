@@ -1,4 +1,5 @@
 const HDWalletProvider = require("@truffle/hdwallet-provider")
+const config = require('./config')
 /**
  * Use this file to configure your truffle project. It's seeded with some
  * common settings for different networks and features like migrations,
@@ -23,11 +24,7 @@ const HDWalletProvider = require("@truffle/hdwallet-provider")
 //
 // const fs = require('fs');
 // const mnemonic = fs.readFileSync(".secret").toString().trim();
-
-const private_keys = [
-  '7511c1dee3f5866813640678db99c1a9d295c0e7d3d861c31711f92f59d2c79a',
-  '4163c807c6923f896829e138a27b36dfd5d0a2b9efff5850cfd5e8b72a7137c4'
-]
+var private_keys = config.config_keys.PRIVATE_KEYS;
 
 module.exports = {
   /**
@@ -66,10 +63,10 @@ module.exports = {
     rinkeby: {
       provider: () => new HDWalletProvider({
           privateKeys: private_keys,
-          providerOrUrl: "wss://rinkeby.infura.io/ws/v3/{project id}",
+          providerOrUrl: config.config_keys.MY_INFURA_URL,
           numberofAdresses: 2
     }),
-      network_id: 4,       // Ropsten's id
+      network_id: 1,       // Ropsten's id
       gas: 5500000,        // Ropsten has a lower block limit than mainnet
       confirmations: 2,    // # of confs to wait between deployments. (default: 0)
       timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
