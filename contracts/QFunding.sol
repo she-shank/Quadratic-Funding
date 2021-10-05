@@ -13,9 +13,9 @@ contract QFunding{
     uint256 raiseBy = 12345678765;
     address owner;
     State currentState;
-    uint256 public currentBal;
+    //uint256 public currentBal;
     Project [] projectsListed;
-    Pool sponsorPool;
+    Pool public sponsorPool;
     
     //modifier to allow access only to the owner.
     modifier isOwner() {
