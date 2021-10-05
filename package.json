@@ -12,7 +12,8 @@
     "react-scripts": "4.0.3",
     "truffle": "^5.4.13",
     "web-vitals": "^1.1.2",
-    "web3": "^1.6.0"
+    "web3": "^1.6.0",
+    "build": "file:./build/"
   },
   "scripts": {
     "start": "react-scripts start",
